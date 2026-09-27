@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}{{ set.name }}{% endblock %}
+
+{% block content %}
+<section class="max-w-7xl mx-auto px-4 py-8">
+
+    <!-- Breadcrumb -->
+    <nav class="flex items-center gap-2 text-sm mb-8">
+        <a href="{{ url_for('home') }}" class="text-gray-500 hover:text-sw-yellow transition-colors">Home</a>
+        <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href="{{ url_for('browse') }}" class="text-gray-500 hover:text-sw-yellow transition-colors">Browse</a>
+        <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <a href="{{ url_for('browse', theme=set.theme_name) }}" class="text-sw-blue/70 hover:text-sw-blue transition-colors">{{ set.theme_name }}</a>
+        <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-gray-400 truncate">{{ set.name }}</span>
+    </nav>
+
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mb-16">
+
+        <!-- Image Panel -->
+        <div class="relative">
+            <div class="bg-gradient-to-br from-sw-gray/60 to-sw-dark border border-sw-yellow/15 rounded-2xl overflow-hidden aspect-square">
+                <img src="{{ url_for('image_proxy', url=set.image_url) }}"
+                     alt="{{ set.name }}"
+                     class="w-full h-full object-contain p-8 hover:scale-105 transition-transform duration-500"
+                     onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%231A1A2E%22 width=%22100%22 height=%22100%22/><text x=%2250%22 y=%2255%22 text-anchor=%22middle%22 fill=%22%23FFE81F%22 font-size=%2240%22>🧱</text></svg>'">
+            </div>
+            {% if set.get('my_quantity') %}
+            <div class="absolute top-4 left-4 bg-gradient-to-r from-sw-yellow to-sw-gold text-sw-dark font-display font-bold text-sm px-4 py-2 rounded-full shadow-lg shadow-sw-yellow/30">
+                ⭐ IN YOUR COLLECTION ×{{ set.my_quantity }}
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Info Panel -->
+        <div class="flex flex-col justify-center">
+            <!-- Set Number Badge -->
+            <div class="inline-flex items-center gap-2 mb-4">
+                <span class="px-3 py-1 rounded-full bg-sw-yellow/10 border border-sw-yellow/30 text-sw-yellow font-display text-xs font-bold tracking-wider">
+                    SET #{{ set.set_number }}
+                </span>
+                <span class="px-3 py-1 rounded-full bg-sw-blue/10 border border-sw-blue/30 text-sw-blue font-display text-xs tracking-wider">
+                    {{ set.theme_name }}
+                </span>
+            </div>
+
+            <!-- Title -->
+            <h1 class="font-display text-3xl sm:text-4xl font-bold text-sw-yellow leading-tight mb-6 tracking-wide">
+                {{ set.name }}
+            </h1>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-2 gap-4 mb-8">
+                <div class="bg-sw-gray/40 border border-sw-yellow/10 rounded-xl p-4 text-center">
+                    <div class="font-display text-2xl font-bold text-sw-yellow">{{ "{:,}".format(set.number_of_parts) }}</div>
+                    <div class="text-gray-500 text-xs uppercase tracking-wider mt-1">Pieces</div>
+                </div>
+                <div class="bg-sw-gray/40 border border-sw-yellow/10 rounded-xl p-4 text-center">
+                    <div class="font-display text-2xl font-bold text-sw-blue">{{ set.year_released }}</div>
+                    <div class="text-gray-500 text-xs uppercase tracking-wider mt-1">Released</div>
+                </div>
+            </div>
+
+            <!-- Details Table -->
+            <div class="bg-sw-gray/30 border border-sw-yellow/10 rounded-xl overflow-hidden mb-8">
+                <div class="px-5 py-3 border-b border-sw-yellow/10 flex justify-between items-center">
+                    <span class="text-gray-400 text-sm">Set Number</span>
+                    <span class="text-gray-200 font-medium text-sm">{{ set.set_number }}</span>
+                </div>
+                <div class="px-5 py-3 border-b border-sw-yellow/10 flex justify-between items-center">
+                    <span class="text-gray-400 text-sm">Theme</span>
+                    <a href="{{ url_for('browse', theme=set.theme_name) }}" class="text-sw-blue hover:text-sw-yellow transition-colors text-sm">{{ set.theme_name }}</a>
+                </div>
+                <div class="px-5 py-3 border-b border-sw-yellow/10 flex justify-between items-center">
+                    <span class="text-gray-400 text-sm">Year Released</span>
+                    <a href="{{ url_for('browse', year=set.year_released) }}" class="text-gray-200 hover:text-sw-yellow transition-colors text-sm">{{ set.year_released }}</a>
+                </div>
+                <div class="px-5 py-3 border-b border-sw-yellow/10 flex justify-between items-center">
+                    <span class="text-gray-400 text-sm">Number of Parts</span>
+                    <span class="text-gray-200 font-medium text-sm">{{ "{:,}".format(set.number_of_parts) }}</span>
+                </div>
+                <div class="px-5 py-3 flex justify-between items-center">
+                    <span class="text-gray-400 text-sm">Type</span>
+                    <span class="text-gray-200 text-sm capitalize">{{ set.type }}</span>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex flex-wrap gap-3">
+                <a href="{{ url_for('browse', theme=set.theme_name) }}"
+                   class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-sw-yellow/10 border border-sw-yellow/30 text-sw-yellow font-display text-sm tracking-wider hover:bg-sw-yellow/20 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                    More {{ set.theme_name }}
+                </a>
+                <a href="{{ url_for('browse', year=set.year_released) }}"
+                   class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-sw-blue/10 border border-sw-blue/30 text-sw-blue font-display text-sm tracking-wider hover:bg-sw-blue/20 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    All from {{ set.year_released }}
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Sets -->
+    {% if related %}
+    <div class="border-t border-sw-yellow/10 pt-12">
+        <div class="flex items-center gap-4 mb-8">
+            <div class="h-px flex-grow bg-gradient-to-r from-transparent via-sw-yellow/20 to-transparent"></div>
+            <h2 class="font-display text-xl font-bold text-sw-yellow tracking-wider">MORE FROM {{ set.theme_name | upper }}</h2>
+            <div class="h-px flex-grow bg-gradient-to-r from-transparent via-sw-yellow/20 to-transparent"></div>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+            {% for r in related %}
+            <a href="{{ url_for('detail', set_id=r.id) }}" class="set-card group">
+                <div class="bg-sw-gray/40 border border-sw-yellow/10 rounded-xl overflow-hidden hover:border-sw-yellow/30 transition-all duration-300 hover:-translate-y-0.5">
+                    <div class="aspect-square bg-gradient-to-br from-sw-gray/50 to-sw-dark overflow-hidden">
+                        <img src="{{ url_for('image_proxy', url=r.image_url) }}"
+                             alt="{{ r.name }}"
+                             class="w-full h-full object-contain p-3 group-hover:scale-105 transition-transform duration-300"
+                             loading="lazy"
+                             onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%231A1A2E%22 width=%22100%22 height=%22100%22/><text x=%2250%22 y=%2255%22 text-anchor=%22middle%22 fill=%22%23FFE81F%22 font-size=%2240%22>🧱</text></svg>'">
+                    </div>
+                    <div class="p-3">
+                        <h3 class="text-xs text-gray-300 group-hover:text-sw-yellow transition-colors line-clamp-2">{{ r.name }}</h3>
+                        <div class="text-[10px] text-gray-600 mt-1">{{ r.year_released }} &bull; {{ "{:,}".format(r.number_of_parts) }} pcs</div>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+</section>
+{% endblock %}

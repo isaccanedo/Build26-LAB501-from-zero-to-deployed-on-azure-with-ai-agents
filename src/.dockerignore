@@ -1,0 +1,12 @@
+.git
+.venv
+__pycache__
+*.pyc
+.env
+.azure
+.github
+infra
+*.md
+test-*.png
+.playwright-mcp
+.gitignore

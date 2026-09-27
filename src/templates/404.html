@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}404 - Not Found{% endblock %}
+
+{% block content %}
+<section class="max-w-3xl mx-auto px-4 py-20 text-center">
+
+    <!-- Big 404 -->
+    <div class="relative mb-8">
+        <h1 class="font-display text-[10rem] sm:text-[14rem] font-black text-sw-yellow/10 leading-none select-none">
+            404
+        </h1>
+        <div class="absolute inset-0 flex items-center justify-center">
+            <div class="text-center">
+                <div class="text-7xl mb-4">💥</div>
+                <h2 class="font-display text-3xl font-bold text-sw-yellow tracking-wider">
+                    DISTURBANCE IN THE FORCE
+                </h2>
+            </div>
+        </div>
+    </div>
+
+    <p class="text-gray-400 text-lg mb-4">
+        The set you're looking for has been lost in hyperspace.
+    </p>
+    <p class="text-gray-600 text-sm mb-10">
+        It may have been moved, removed, or perhaps it existed only in a galaxy far, far away.
+    </p>
+
+    <div class="flex flex-wrap justify-center gap-4">
+        <a href="{{ url_for('home') }}"
+           class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-sw-yellow to-sw-gold text-sw-dark font-display font-bold text-sm tracking-wider hover:shadow-lg hover:shadow-sw-yellow/30 transition-all">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            RETURN HOME
+        </a>
+        <a href="{{ url_for('browse') }}"
+           class="inline-flex items-center gap-2 px-6 py-3 rounded-full border-2 border-sw-yellow text-sw-yellow font-display font-bold text-sm tracking-wider hover:bg-sw-yellow hover:text-sw-dark transition-all">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            SEARCH SETS
+        </a>
+    </div>
+
+</section>
+{% endblock %}

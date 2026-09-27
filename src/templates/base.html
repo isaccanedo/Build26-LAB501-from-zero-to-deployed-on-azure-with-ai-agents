@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}LEGO Vault{% endblock %} | Star Wars Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'sw-yellow': '#FFE81F',
+                        'sw-gold': '#C8A951',
+                        'sw-dark': '#0A0A0F',
+                        'sw-darker': '#050508',
+                        'sw-gray': '#1A1A2E',
+                        'sw-light-gray': '#2A2A3E',
+                        'sw-red': '#FF2D2D',
+                        'sw-blue': '#4FC3F7',
+                    },
+                    fontFamily: {
+                        'display': ['Orbitron', 'sans-serif'],
+                        'body': ['Exo 2', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="bg-sw-darker text-gray-200 font-body min-h-screen flex flex-col">
+
+    <!-- Starfield Background -->
+    <div class="stars-bg fixed inset-0 pointer-events-none z-0"></div>
+
+    <!-- Navigation -->
+    <nav class="relative z-50 border-b border-sw-yellow/20 bg-sw-dark/90 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <a href="{{ url_for('home') }}" class="flex items-center gap-3 group">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-sw-yellow to-sw-gold flex items-center justify-center shadow-lg shadow-sw-yellow/20 group-hover:shadow-sw-yellow/40 transition-shadow">
+                        <svg class="w-6 h-6 text-sw-dark" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                        </svg>
+                    </div>
+                    <span class="font-display font-bold text-xl tracking-wider text-sw-yellow group-hover:text-white transition-colors">
+                        LEGO VAULT
+                    </span>
+                </a>
+
+                <!-- Nav Links -->
+                <div class="flex items-center gap-6">
+                    <a href="{{ url_for('home') }}"
+                       class="font-display text-sm tracking-wide text-gray-300 hover:text-sw-yellow transition-colors uppercase">
+                        Home
+                    </a>
+                    <a href="{{ url_for('browse') }}"
+                       class="font-display text-sm tracking-wide text-gray-300 hover:text-sw-yellow transition-colors uppercase">
+                        Browse
+                    </a>
+
+                    <!-- Quick Search -->
+                    <form action="{{ url_for('browse') }}" method="GET" class="hidden sm:flex items-center">
+                        <div class="relative">
+                            <input type="text" name="q" placeholder="Search the galaxy..."
+                                   value="{{ request.args.get('q', '') }}"
+                                   class="w-48 lg:w-64 pl-4 pr-10 py-2 rounded-full bg-sw-gray border border-sw-yellow/30 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-sw-yellow focus:ring-1 focus:ring-sw-yellow/50 transition-all">
+                            <button type="submit" class="absolute right-3 top-1/2 -translate-y-1/2 text-sw-yellow/60 hover:text-sw-yellow transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="relative z-10 flex-grow">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="relative z-10 border-t border-sw-yellow/10 bg-sw-dark/80 backdrop-blur-sm mt-auto">
+        <div class="max-w-7xl mx-auto px-4 py-8">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-2">
+                    <span class="font-display text-sw-yellow/60 text-sm tracking-wider">LEGO VAULT</span>
+                    <span class="text-gray-600">|</span>
+                    <span class="text-gray-500 text-sm">A long time ago in a brick box far, far away...</span>
+                </div>
+                <div class="text-gray-600 text-xs">
+                    Powered by Azure Cosmos DB &bull; {{ total_sets if total_sets is defined else '21,495' }} sets indexed
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

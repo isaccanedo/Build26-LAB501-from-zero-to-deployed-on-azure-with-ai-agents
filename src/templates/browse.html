@@ -1,0 +1,214 @@
+{% extends "base.html" %}
+
+{% block title %}Browse Sets{% endblock %}
+
+{% block content %}
+<section class="max-w-7xl mx-auto px-4 py-8">
+
+    <!-- Page Header -->
+    <div class="mb-8">
+        <h1 class="font-display text-3xl font-bold text-sw-yellow tracking-wider mb-2">BROWSE SETS</h1>
+        <p class="text-gray-400">
+            {% if search %}
+                Showing results for "<span class="text-sw-yellow">{{ search }}</span>"
+                {% if selected_theme %} in <span class="text-sw-blue">{{ selected_theme }}</span>{% endif %}
+                &mdash;
+            {% endif %}
+            <span class="text-gray-300">{{ "{:,}".format(total_items) }} sets found</span>
+        </p>
+    </div>
+
+    <!-- Filters Bar -->
+    <form action="{{ url_for('browse') }}" method="GET"
+          class="bg-sw-gray/50 border border-sw-yellow/10 rounded-xl p-4 sm:p-6 mb-8 backdrop-blur-sm">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+
+            <!-- Search -->
+            <div class="lg:col-span-2">
+                <label class="block text-xs font-display text-gray-400 tracking-wider uppercase mb-2">Search</label>
+                <input type="text" name="q" value="{{ search }}" placeholder="Set name..."
+                       class="w-full px-4 py-2.5 rounded-lg bg-sw-dark border border-sw-yellow/20 text-gray-200 placeholder-gray-600 focus:outline-none focus:border-sw-yellow focus:ring-1 focus:ring-sw-yellow/30 transition-all text-sm">
+            </div>
+
+            <!-- Theme Filter -->
+            <div>
+                <label class="block text-xs font-display text-gray-400 tracking-wider uppercase mb-2">Theme</label>
+                <select name="theme"
+                        class="w-full px-4 py-2.5 rounded-lg bg-sw-dark border border-sw-yellow/20 text-gray-200 focus:outline-none focus:border-sw-yellow focus:ring-1 focus:ring-sw-yellow/30 transition-all text-sm appearance-none">
+                    <option value="">All Themes</option>
+                    {% for t in themes %}
+                    <option value="{{ t }}" {% if t == selected_theme %}selected{% endif %}>{{ t }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Year Filter -->
+            <div>
+                <label class="block text-xs font-display text-gray-400 tracking-wider uppercase mb-2">Year</label>
+                <input type="number" name="year" value="{{ selected_year }}" placeholder="e.g. 2023" min="1949" max="2026"
+                       class="w-full px-4 py-2.5 rounded-lg bg-sw-dark border border-sw-yellow/20 text-gray-200 placeholder-gray-600 focus:outline-none focus:border-sw-yellow focus:ring-1 focus:ring-sw-yellow/30 transition-all text-sm">
+            </div>
+
+            <!-- Sort + Submit -->
+            <div class="flex gap-2">
+                <div class="flex-grow">
+                    <label class="block text-xs font-display text-gray-400 tracking-wider uppercase mb-2">Sort</label>
+                    <select name="sort"
+                            class="w-full px-4 py-2.5 rounded-lg bg-sw-dark border border-sw-yellow/20 text-gray-200 focus:outline-none focus:border-sw-yellow focus:ring-1 focus:ring-sw-yellow/30 transition-all text-sm appearance-none">
+                        <option value="name" {% if sort == 'name' %}selected{% endif %}>Name A-Z</option>
+                        <option value="year_desc" {% if sort == 'year_desc' %}selected{% endif %}>Newest First</option>
+                        <option value="year_asc" {% if sort == 'year_asc' %}selected{% endif %}>Oldest First</option>
+                        <option value="parts_desc" {% if sort == 'parts_desc' %}selected{% endif %}>Most Parts</option>
+                        <option value="parts_asc" {% if sort == 'parts_asc' %}selected{% endif %}>Fewest Parts</option>
+                    </select>
+                </div>
+                <div class="flex flex-col justify-end">
+                    <button type="submit"
+                            class="px-5 py-2.5 rounded-lg bg-gradient-to-r from-sw-yellow to-sw-gold text-sw-dark font-display font-bold text-sm tracking-wider hover:shadow-lg hover:shadow-sw-yellow/20 transition-all">
+                        GO
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        {% if search or selected_theme or selected_year %}
+        <div class="mt-4 pt-4 border-t border-sw-yellow/10 flex items-center gap-2 flex-wrap">
+            <span class="text-xs text-gray-500 uppercase tracking-wider">Active filters:</span>
+            {% if search %}
+            <a href="{{ url_for('browse', theme=selected_theme, year=selected_year, sort=sort) }}"
+               class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-sw-yellow/10 border border-sw-yellow/30 text-sw-yellow text-xs hover:bg-sw-yellow/20 transition-colors">
+                "{{ search }}" <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+            </a>
+            {% endif %}
+            {% if selected_theme %}
+            <a href="{{ url_for('browse', q=search, year=selected_year, sort=sort) }}"
+               class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-sw-blue/10 border border-sw-blue/30 text-sw-blue text-xs hover:bg-sw-blue/20 transition-colors">
+                {{ selected_theme }} <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+            </a>
+            {% endif %}
+            {% if selected_year %}
+            <a href="{{ url_for('browse', q=search, theme=selected_theme, sort=sort) }}"
+               class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-sw-gold/10 border border-sw-gold/30 text-sw-gold text-xs hover:bg-sw-gold/20 transition-colors">
+                {{ selected_year }} <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+            </a>
+            {% endif %}
+            <a href="{{ url_for('browse') }}" class="text-xs text-gray-500 hover:text-sw-red transition-colors ml-2">Clear all</a>
+        </div>
+        {% endif %}
+    </form>
+
+    <!-- Results Grid -->
+    {% if sets %}
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 mb-8">
+        {% for s in sets %}
+        <a href="{{ url_for('detail', set_id=s.id) }}" class="set-card group">
+            <div class="bg-sw-gray/40 border border-sw-yellow/10 rounded-xl overflow-hidden hover:border-sw-yellow/30 transition-all duration-300 hover:shadow-lg hover:shadow-sw-yellow/5 hover:-translate-y-0.5 h-full flex flex-col">
+                <!-- Image -->
+                <div class="relative aspect-square bg-gradient-to-br from-sw-gray/50 to-sw-dark overflow-hidden">
+                    <img src="{{ url_for('image_proxy', url=s.image_url) }}"
+                         alt="{{ s.name }}"
+                         class="w-full h-full object-contain p-3 group-hover:scale-105 transition-transform duration-300"
+                         loading="lazy"
+                         onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%231A1A2E%22 width=%22100%22 height=%22100%22/><text x=%2250%22 y=%2255%22 text-anchor=%22middle%22 fill=%22%23FFE81F%22 font-size=%2240%22>🧱</text></svg>'">
+                    {% if s.get('my_quantity') %}
+                    <div class="absolute top-2 left-2 bg-sw-yellow/90 rounded-full px-2 py-0.5">
+                        <span class="text-sw-dark font-display text-[10px] font-bold">OWNED ×{{ s.my_quantity }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+                <!-- Info -->
+                <div class="p-3 flex-grow flex flex-col">
+                    <h3 class="font-semibold text-xs text-gray-200 group-hover:text-sw-yellow transition-colors line-clamp-2 mb-auto">
+                        {{ s.name }}
+                    </h3>
+                    <div class="flex items-center justify-between mt-2 gap-1">
+                        <span class="text-[10px] text-sw-blue/70 truncate">{{ s.theme_name }}</span>
+                        <span class="text-[10px] text-gray-500 whitespace-nowrap">{{ s.year_released }}</span>
+                    </div>
+                    <div class="text-[10px] text-gray-600 mt-1">
+                        {{ "{:,}".format(s.number_of_parts) }} pieces &bull; #{{ s.set_number }}
+                    </div>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if total_pages > 1 %}
+    <nav class="flex items-center justify-center gap-2 py-8">
+        {% set base_params = {} %}
+        {% if search %}{% set _ = base_params.update({'q': search}) %}{% endif %}
+        {% if selected_theme %}{% set _ = base_params.update({'theme': selected_theme}) %}{% endif %}
+        {% if selected_year %}{% set _ = base_params.update({'year': selected_year}) %}{% endif %}
+        {% if sort != 'name' %}{% set _ = base_params.update({'sort': sort}) %}{% endif %}
+
+        <!-- Previous -->
+        {% if page > 1 %}
+        <a href="{{ url_for('browse', page=page-1, **base_params) }}"
+           class="px-4 py-2 rounded-lg border border-sw-yellow/30 text-sw-yellow font-display text-sm hover:bg-sw-yellow/10 transition-colors">
+            &laquo; Prev
+        </a>
+        {% endif %}
+
+        <!-- Page numbers -->
+        {% set start_page = [page - 3, 1] | max %}
+        {% set end_page = [page + 3, total_pages] | min %}
+
+        {% if start_page > 1 %}
+        <a href="{{ url_for('browse', page=1, **base_params) }}"
+           class="w-10 h-10 rounded-lg border border-sw-yellow/20 text-gray-400 font-display text-sm flex items-center justify-center hover:border-sw-yellow/50 hover:text-sw-yellow transition-colors">
+            1
+        </a>
+        {% if start_page > 2 %}
+        <span class="text-gray-600 px-1">...</span>
+        {% endif %}
+        {% endif %}
+
+        {% for p in range(start_page, end_page + 1) %}
+        <a href="{{ url_for('browse', page=p, **base_params) }}"
+           class="w-10 h-10 rounded-lg border font-display text-sm flex items-center justify-center transition-colors
+                  {% if p == page %}
+                  bg-sw-yellow text-sw-dark border-sw-yellow font-bold
+                  {% else %}
+                  border-sw-yellow/20 text-gray-400 hover:border-sw-yellow/50 hover:text-sw-yellow
+                  {% endif %}">
+            {{ p }}
+        </a>
+        {% endfor %}
+
+        {% if end_page < total_pages %}
+        {% if end_page < total_pages - 1 %}
+        <span class="text-gray-600 px-1">...</span>
+        {% endif %}
+        <a href="{{ url_for('browse', page=total_pages, **base_params) }}"
+           class="w-10 h-10 rounded-lg border border-sw-yellow/20 text-gray-400 font-display text-sm flex items-center justify-center hover:border-sw-yellow/50 hover:text-sw-yellow transition-colors">
+            {{ total_pages }}
+        </a>
+        {% endif %}
+
+        <!-- Next -->
+        {% if page < total_pages %}
+        <a href="{{ url_for('browse', page=page+1, **base_params) }}"
+           class="px-4 py-2 rounded-lg border border-sw-yellow/30 text-sw-yellow font-display text-sm hover:bg-sw-yellow/10 transition-colors">
+            Next &raquo;
+        </a>
+        {% endif %}
+    </nav>
+    {% endif %}
+
+    {% else %}
+    <!-- No Results -->
+    <div class="text-center py-20">
+        <div class="text-6xl mb-4">🔍</div>
+        <h2 class="font-display text-2xl text-sw-yellow mb-3">NO SETS FOUND</h2>
+        <p class="text-gray-500 mb-6">These are not the bricks you're looking for...</p>
+        <a href="{{ url_for('browse') }}"
+           class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-sw-yellow/40 text-sw-yellow font-display text-sm hover:bg-sw-yellow/10 transition-colors">
+            Clear Filters
+        </a>
+    </div>
+    {% endif %}
+
+</section>
+{% endblock %}

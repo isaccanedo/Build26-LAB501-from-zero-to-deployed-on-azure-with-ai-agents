@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="relative overflow-hidden">
+    <!-- Gradient overlay -->
+    <div class="absolute inset-0 bg-gradient-to-b from-sw-dark via-transparent to-sw-darker z-0"></div>
+
+    <div class="relative z-10 max-w-7xl mx-auto px-4 py-20 sm:py-32 text-center">
+        <!-- Crawl-style intro text -->
+        <p class="font-display text-sw-blue text-sm tracking-[0.3em] uppercase mb-4 animate-pulse">
+            A LONG TIME AGO IN A BRICK BOX FAR, FAR AWAY...
+        </p>
+
+        <h1 class="font-display text-5xl sm:text-7xl font-black text-sw-yellow mb-6 tracking-wider drop-shadow-[0_0_30px_rgba(255,232,31,0.3)]">
+            LEGO VAULT
+        </h1>
+
+        <p class="text-gray-400 text-lg sm:text-xl max-w-2xl mx-auto mb-10">
+            Explore the ultimate collection of <span class="text-sw-yellow font-semibold">{{ "{:,}".format(total_sets) }}</span> LEGO sets
+            across <span class="text-sw-blue font-semibold">{{ total_themes }}</span> themes.
+            Search, discover, and relive the builds.
+        </p>
+
+        <!-- Hero Search Bar -->
+        <form action="{{ url_for('browse') }}" method="GET" class="max-w-xl mx-auto mb-12">
+            <div class="relative group">
+                <div class="absolute -inset-0.5 bg-gradient-to-r from-sw-yellow via-sw-gold to-sw-yellow rounded-full opacity-30 group-hover:opacity-60 blur transition-opacity"></div>
+                <div class="relative flex items-center">
+                    <input type="text" name="q" placeholder="Search for any LEGO set..."
+                           class="w-full pl-6 pr-32 py-4 rounded-full bg-sw-gray/90 border border-sw-yellow/30 text-lg text-gray-100 placeholder-gray-500 focus:outline-none focus:border-sw-yellow transition-all backdrop-blur-sm">
+                    <button type="submit"
+                            class="absolute right-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-sw-yellow to-sw-gold text-sw-dark font-display font-bold text-sm tracking-wider hover:shadow-lg hover:shadow-sw-yellow/30 transition-all">
+                        SEARCH
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <!-- Stats Cards -->
+        <div class="flex flex-wrap justify-center gap-6 mb-16">
+            <div class="stat-card bg-sw-gray/60 border border-sw-yellow/20 rounded-xl px-8 py-5 backdrop-blur-sm hover:border-sw-yellow/50 transition-all">
+                <div class="font-display text-3xl font-bold text-sw-yellow">{{ "{:,}".format(total_sets) }}</div>
+                <div class="text-gray-400 text-sm tracking-wide uppercase mt-1">Total Sets</div>
+            </div>
+            <div class="stat-card bg-sw-gray/60 border border-sw-yellow/20 rounded-xl px-8 py-5 backdrop-blur-sm hover:border-sw-blue/50 transition-all">
+                <div class="font-display text-3xl font-bold text-sw-blue">{{ total_themes }}</div>
+                <div class="text-gray-400 text-sm tracking-wide uppercase mt-1">Themes</div>
+            </div>
+            <div class="stat-card bg-sw-gray/60 border border-sw-yellow/20 rounded-xl px-8 py-5 backdrop-blur-sm hover:border-sw-gold/50 transition-all">
+                <div class="font-display text-3xl font-bold text-sw-gold">60+</div>
+                <div class="text-gray-400 text-sm tracking-wide uppercase mt-1">Years of LEGO</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Sets Section -->
+<section class="max-w-7xl mx-auto px-4 pb-20">
+    <div class="flex items-center gap-4 mb-8">
+        <div class="h-px flex-grow bg-gradient-to-r from-transparent via-sw-yellow/30 to-transparent"></div>
+        <h2 class="font-display text-2xl font-bold text-sw-yellow tracking-wider">LEGENDARY BUILDS</h2>
+        <div class="h-px flex-grow bg-gradient-to-r from-transparent via-sw-yellow/30 to-transparent"></div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {% for s in featured %}
+        <a href="{{ url_for('detail', set_id=s.id) }}" class="set-card group">
+            <div class="bg-sw-gray/50 border border-sw-yellow/10 rounded-xl overflow-hidden hover:border-sw-yellow/40 transition-all duration-300 hover:shadow-lg hover:shadow-sw-yellow/10 hover:-translate-y-1">
+                <!-- Image -->
+                <div class="relative aspect-square bg-gradient-to-br from-sw-gray to-sw-dark overflow-hidden">
+                    <img src="{{ url_for('image_proxy', url=s.image_url) }}"
+                         alt="{{ s.name }}"
+                         class="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500"
+                         loading="lazy"
+                         onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%231A1A2E%22 width=%22100%22 height=%22100%22/><text x=%2250%22 y=%2255%22 text-anchor=%22middle%22 fill=%22%23FFE81F%22 font-size=%2240%22>🧱</text></svg>'">
+                    <div class="absolute top-3 right-3 bg-sw-dark/80 backdrop-blur-sm rounded-full px-3 py-1 border border-sw-yellow/20">
+                        <span class="text-sw-yellow font-display text-xs font-bold">{{ "{:,}".format(s.number_of_parts) }} pcs</span>
+                    </div>
+                </div>
+                <!-- Info -->
+                <div class="p-4">
+                    <h3 class="font-display text-sm font-semibold text-gray-100 group-hover:text-sw-yellow transition-colors truncate">
+                        {{ s.name }}
+                    </h3>
+                    <div class="flex items-center justify-between mt-2">
+                        <span class="text-xs text-sw-blue/80 font-medium">{{ s.theme_name }}</span>
+                        <span class="text-xs text-gray-500">{{ s.year_released }}</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+
+    <!-- Browse All CTA -->
+    <div class="text-center mt-12">
+        <a href="{{ url_for('browse') }}"
+           class="inline-flex items-center gap-2 px-8 py-3 rounded-full border-2 border-sw-yellow text-sw-yellow font-display font-bold tracking-wider hover:bg-sw-yellow hover:text-sw-dark transition-all duration-300 hover:shadow-lg hover:shadow-sw-yellow/20">
+            BROWSE ALL SETS
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+        </a>
+    </div>
+</section>
+{% endblock %}
