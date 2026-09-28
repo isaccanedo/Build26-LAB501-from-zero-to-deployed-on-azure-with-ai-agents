@@ -2,7 +2,7 @@
 <img src="img/banner-build-26.png" alt="Microsoft Build 2026" width="1200"/>
 </p>
 
-# [Microsoft Build 2026](https://build.microsoft.com)
+## [Microsoft Build 2026](https://build.microsoft.com)
 
 ## 🔥 LAB501: From Zero to Deployed on Azure with AI Agents
 
