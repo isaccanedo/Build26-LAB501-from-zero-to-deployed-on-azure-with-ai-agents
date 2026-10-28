@@ -6,7 +6,7 @@
 
 ## 🔥 LAB501: From Zero to Deployed on Azure with AI Agents
 
-### Use your local language
+## Use your local language
 
 English | [한국어](./localizations/ko-kr)
 
